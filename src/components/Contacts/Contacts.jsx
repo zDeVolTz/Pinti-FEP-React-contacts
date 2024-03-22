@@ -28,7 +28,8 @@ class Contacts extends Component {
             const newId = uniqid();
             this.setState(prevState => ({
                 userData : [...prevState.userData, { ...prevState.newInputData, id: newId }],
-                newInputData: {}
+                newInputData: {},
+                isActive : false
           }))
         }
     }
