@@ -1,17 +1,15 @@
 import { Component } from 'react';
-import ItemList from './ItemList'; 
 import style from './Contacts.module.scss'
 import uniqid from 'uniqid';
 
 class Contacts extends Component {
     constructor(props){
         super(props);
-
+        
         this.state = {
-            userData : this.props.userData,
+            contactsData : this.props.contactsData,
             isActive : false,
-            newInputData: {},
-            defaultField : this.props.defaultField
+            newInputData: {}
         }
         
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -21,13 +19,19 @@ class Contacts extends Component {
 
     }
 
-   
+    componentDidUpdate(prevProps) {
+        if (prevProps.contactsData !== this.props.contactsData) {
+            this.setState({ 
+                contactsData : this.props.contactsData
+             });
+        }
+    }
 
     handleSubmit() {
-        if(Object.keys(this.state.newInputData).length === this.state.defaultField.length) {
+        if(Object.keys(this.state.newInputData).length === 3) {
             const newId = uniqid();
             this.setState(prevState => ({
-                userData : [...prevState.userData, { ...prevState.newInputData, id: newId }],
+                contactsData : [...prevState.contactsData, { ...prevState.newInputData, id: newId }],
                 newInputData: {},
                 isActive : false
           }))
@@ -46,10 +50,10 @@ class Contacts extends Component {
    
     handleDeleteItem(id) {
         this.setState(prevState => {
-            const updatedUserData = [...prevState.userData];
-            updatedUserData.splice(updatedUserData.findIndex(item => item.id === id), 1);
+            const updatedcontactsData = [...prevState.contactsData];
+            updatedcontactsData.splice(updatedcontactsData.findIndex(item => item.id === id), 1);
             return {
-                userData: updatedUserData
+                contactsData: updatedcontactsData
             }
         })
     }
@@ -61,20 +65,23 @@ class Contacts extends Component {
     render() {
         return (
 					<section className={style.contacts}>
-                        <div className={`${style.usersList} ${this.state.userData.length === 0 ? style.hidden : ''}`}>
+                        <div className={`${style.usersList} ${this.state.contactsData.length === 0 ? style.hidden : ''}`}>
                             <table className= {style.usersList__table}>
                                 <tbody className={style.usersList__block}>
                                     <tr className={style.usersList__header}>
-                                        {this.state.defaultField.map(element => (
-                                            <th key={`usersList__header-${element}`} className={style.usersList__headerTitle}>{element}</th>
-                                        ))}
+                                        <th className={style.usersList__headerTitle}>Ім'я</th>
+                                        <th className={style.usersList__headerTitle}>Прізвище</th>
+                                        <th className={style.usersList__headerTitle}>Телефон</th>
                                     </tr>
-                                    {this.state.userData.map((element) => (
-                                        <ItemList
-                                            key={`usersList-${element.id}`}
-                                            userData={element}
-                                            handleDeleteItem={this.handleDeleteItem}
-                                        />
+                                    {this.state.contactsData.map(element => (
+                                       <tr key={element.id} className={style.usersList__contentList}>
+                                            <td className={style.usersList__contentList_item}>{element.name}</td>
+                                            <td className={style.usersList__contentList_item}>{element.surname}</td>
+                                            <td className={style.usersList__contentList_item}>{element.phone}</td>
+                                            <td className={style.usersList__contentList_item}>
+                                                <button className={style.usersList__contentList_btn} onClick={() => this.handleDeleteItem(element.id)}>Видалити контакт</button>
+                                            </td>
+                                       </tr>
                                     ))}
                                 </tbody>
                             </table>
@@ -83,23 +90,45 @@ class Contacts extends Component {
                             <button className={`${style.contactForm__btn_show} ${this.state.isActive && style.hidden}`} onClick={this.handleClick}>Додати новий контакт</button>
                             <div className={`${style.contactForm__block} ${!this.state.isActive && style.hidden}`}>
                                 <h2 className={style.contactForm__title}>Новий контакт</h2>
-                                {this.state.defaultField.map(element => (
-                                    <div key={`contactForm__item-${element}`} className={style.contactForm__item}>
-                                        <label htmlFor={`${element}`} className={style.contactForm__label}>{element}</label> 
-                                        <input 
-                                            id= {`${element}`} 
-                                            type="text"
-                                            value={this.state.newInputData[element] || ''} 
-                                            className={style.contactForm__input}
-                                            placeholder={`Введіть ${element}`} 
-                                            onChange={this.handleChange}
-                                        /> 
-                                    </div>
-                                ))}
+                                
+                                <div className={style.contactForm__item}>
+                                    <label htmlFor={'name'} className={style.contactForm__label}>Ім'я</label> 
+                                    <input 
+                                        id= 'name'
+                                        type="text"
+                                        value={this.state.newInputData['name'] || ''} 
+                                        className={style.contactForm__input}
+                                        placeholder={`Введіть Ім'я`} 
+                                        onChange={this.handleChange}
+                                    /> 
+                                </div>
+                                <div className={style.contactForm__item}>
+                                    <label htmlFor={'surname'} className={style.contactForm__label}>Прізвище</label> 
+                                    <input 
+                                        id = 'surname'
+                                        type="text"
+                                        value={this.state.newInputData['surname'] || ''} 
+                                        className={style.contactForm__input}
+                                        placeholder={`Введіть Прізвище`} 
+                                        onChange={this.handleChange}
+                                    /> 
+                                </div>
+                                <div className={style.contactForm__item}>
+                                    <label htmlFor={'phone'} className={style.contactForm__label}>Телефон</label> 
+                                    <input 
+                                        id = 'phone'
+                                        type="text"
+                                        value={this.state.newInputData['phone'] || ''} 
+                                        className={style.contactForm__input}
+                                        placeholder={`Введіть ваш номер`} 
+                                        onChange={this.handleChange}
+                                    /> 
+                                </div>
                                 <div className={style.contactForm__btns}>
                                     <button className={style.contactForm__btn} onClick={this.handleSubmit}>Зберегти</button>
                                     <button className={style.contactForm__btn} onClick={this.handleClick}>Скасувати</button>
                                 </div>
+
                             </div>
                         </div>
 					</section>

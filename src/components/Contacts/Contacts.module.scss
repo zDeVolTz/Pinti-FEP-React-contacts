@@ -1,9 +1,8 @@
 .contacts {
-  width: 80%;
   display: flex;
+  min-width: 746px;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
   flex-grow: 1;
   background-color: #b3b4b5;
   gap: 30px;
