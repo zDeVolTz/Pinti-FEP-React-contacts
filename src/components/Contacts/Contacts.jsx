@@ -71,9 +71,7 @@ class Contacts extends Component {
 		return (
 			<section className={style.contacts}>
 				<div
-					className={`${style.usersList} ${
-						this.state.contactsData.length === 0 ? style.hidden : ""
-					}`}>
+					className={style.usersList} >
 					<table className={style.usersList__table}>
 						<tbody className={style.usersList__block}>
 							{this.state.contactsData.map((element) => (
