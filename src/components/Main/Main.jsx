@@ -24,13 +24,14 @@ class Main extends Component {
             return response.json();
         })
         .then(data => {
-            const formattedData = data.map(item => ({
-                id: item.id,
-                name: formatName(item.name),
-                surname: formatSurname(item.name),
-                phone: formatPhoneNumber(item.phone.split(' ')[0])
-            }));
-            this.setState({ contactsData: formattedData });
+            this.setState({ contactsData: data.map(item => 
+                                            ({
+                                                id: item.id,
+                                                name: formatName(item.name),
+                                                surname: formatSurname(item.name),
+                                                phone: formatPhoneNumber(item.phone.split(' ')[0])
+                                            }))
+            })
         })
         .catch(error => {
             alert('Не удалось получить данные');
